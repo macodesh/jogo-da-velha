@@ -3,7 +3,9 @@ import './style.css'
 const x = document.querySelector('.x') as HTMLDivElement
 const o = document.querySelector('.o') as HTMLDivElement
 const boxes = document.querySelectorAll('.box') as NodeListOf<HTMLDivElement>
-const buttons = document.querySelectorAll('.buttons-container button') as NodeListOf<HTMLButtonElement>
+const buttons = document.querySelectorAll(
+  '.buttons-container button'
+) as NodeListOf<HTMLButtonElement>
 const msgContainer = document.querySelector('#message') as HTMLDivElement
 const msgText = document.querySelector('#message p') as HTMLParagraphElement
 
@@ -22,13 +24,24 @@ function setPlayerTurn(): Node {
   }
 }
 
-function hasThreeEquals(box1: HTMLDivElement, box2: HTMLDivElement, box3: HTMLDivElement): number {
-  if (box1.children[0].classList.contains('x') && box2.children[0].classList.contains('x') && box3.children[0].classList.contains('x')) {
+function hasThreeEquals(
+  box1: HTMLDivElement,
+  box2: HTMLDivElement,
+  box3: HTMLDivElement
+): number {
+  if (
+    box1.children[0].classList.contains('x') &&
+    box2.children[0].classList.contains('x') &&
+    box3.children[0].classList.contains('x')
+  ) {
     return 1
-  } else if (box1.children[0].classList.contains('o') && box2.children[0].classList.contains('o') && box3.children[0].classList.contains('o')) {
+  } else if (
+    box1.children[0].classList.contains('o') &&
+    box2.children[0].classList.contains('o') &&
+    box3.children[0].classList.contains('o')
+  ) {
     return 2
-  }
-  else return 0
+  } else return 0
 }
 
 function declareWinner(result: number): void {
@@ -37,11 +50,19 @@ function declareWinner(result: number): void {
 
   setTimeout(() => {
     msgContainer.classList.add('hide')
-  }, 5000)
+  }, 10000)
 }
 
-function hasThreeChildren(box1: HTMLDivElement, box2: HTMLDivElement, box3: HTMLDivElement): boolean {
-  if (box1.children.length > 0 && box2.children.length > 0 && box3.children.length > 0) {
+function hasThreeChildren(
+  box1: HTMLDivElement,
+  box2: HTMLDivElement,
+  box3: HTMLDivElement
+): boolean {
+  if (
+    box1.children.length > 0 &&
+    box2.children.length > 0 &&
+    box3.children.length > 0
+  ) {
     return true
   } else return false
 }
@@ -55,7 +76,7 @@ function checkWinner(): void {
     { box1: boxes[1], box2: boxes[4], box3: boxes[7] },
     { box1: boxes[2], box2: boxes[5], box3: boxes[8] },
     { box1: boxes[0], box2: boxes[4], box3: boxes[8] },
-    { box1: boxes[2], box2: boxes[4], box3: boxes[6] },
+    { box1: boxes[2], box2: boxes[4], box3: boxes[6] }
   ]
 
   for (let i = 0; i < rowsAndColumns.length; i++) {
