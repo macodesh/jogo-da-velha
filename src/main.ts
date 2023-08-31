@@ -17,17 +17,26 @@ let player1Turns = 0
 let player2Turns = 0
 const lastTurn = 5
 
-function setAiTurn(): void {
-  return
+function setAiTurn(box: Node): void {
+  box.appendChild(x.cloneNode(true))
+
+  for (let i = 0; i < boxes.length; i++) {
+    const random = Math.floor(Math.random() * 9)
+
+    if (boxes[random].childNodes[0] === undefined) {
+      boxes[random].appendChild(o.cloneNode(true))
+      break
+    }
+  }
+
+  player1Turns++
+  player2Turns++
 }
 
-function setPlayerTurn(): Node | void {
+function setPlayerTurn(): Node {
   if (player1Turns === player2Turns) {
     player1Turns++
     return x.cloneNode(true)
-  } else if (secondPlayer === 'ai-player') {
-    player2Turns++
-    return setAiTurn()
   } else {
     player2Turns++
     return o.cloneNode(true)
@@ -74,6 +83,7 @@ function declareWinner(result: number): void {
 
   setTimeout(() => {
     msgContainer.classList.add('hide')
+    resetGame()
   }, 3000)
 
   if (result === 1) {
@@ -81,8 +91,6 @@ function declareWinner(result: number): void {
   } else if (result === 2) {
     scoreBoard2.textContent = (+scoreBoard2.textContent! + 1).toString()
   }
-
-  resetGame()
 }
 
 function hasThreeChildren(
@@ -126,9 +134,12 @@ function checkWinner(): void {
 
 boxes.forEach((box) => {
   box.addEventListener('click', function () {
-    if (this.childNodes.length === 0) {
+    if (this.childNodes.length === 0 && secondPlayer !== 'ai-player') {
       const clone = setPlayerTurn()
-      if (clone instanceof Node) this.appendChild(clone)
+      this.appendChild(clone)
+    }
+    if (this.childNodes.length === 0) {
+      setAiTurn(this)
     }
 
     if (player1Turns >= 3) {
