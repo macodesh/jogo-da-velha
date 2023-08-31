@@ -4,20 +4,30 @@ const x = document.querySelector('.x') as HTMLDivElement
 const o = document.querySelector('.o') as HTMLDivElement
 const boxes = document.querySelectorAll('.box') as NodeListOf<HTMLDivElement>
 const buttons = document.querySelectorAll(
-  '.buttons-container button'
+  '#buttons-container button'
 ) as NodeListOf<HTMLButtonElement>
 const msgContainer = document.querySelector('#message') as HTMLDivElement
 const msgText = document.querySelector('#message p') as HTMLParagraphElement
+const scoreBoard1 = document.querySelector('#scoreboard-1') as HTMLSpanElement
+const scoreBoard2 = document.querySelector('#scoreboard-2') as HTMLSpanElement
 
-let secondPlayer: string
+let secondPlayer: string | null
 
 let player1Turns = 0
 let player2Turns = 0
+const lastTurn = 5
 
-function setPlayerTurn(): Node {
+function setAiTurn(): void {
+  return
+}
+
+function setPlayerTurn(): Node | void {
   if (player1Turns === player2Turns) {
     player1Turns++
     return x.cloneNode(true)
+  } else if (secondPlayer === 'ai-player') {
+    player2Turns++
+    return setAiTurn()
   } else {
     player2Turns++
     return o.cloneNode(true)
@@ -44,13 +54,35 @@ function hasThreeEquals(
   } else return 0
 }
 
+function resetGame(): void {
+  player1Turns = 0
+  player2Turns = 0
+
+  boxes.forEach((box) => {
+    box.innerHTML = ''
+  })
+}
+
 function declareWinner(result: number): void {
   msgContainer.classList.remove('hide')
-  msgText.textContent = `O vencedor é: player ${result}`
+
+  if (result !== 0) {
+    msgText.textContent = `O vencedor é: player ${result}`
+  } else {
+    msgText.textContent = 'Deu velha!'
+  }
 
   setTimeout(() => {
     msgContainer.classList.add('hide')
-  }, 10000)
+  }, 3000)
+
+  if (result === 1) {
+    scoreBoard1.textContent = (+scoreBoard1.textContent! + 1).toString()
+  } else if (result === 2) {
+    scoreBoard2.textContent = (+scoreBoard2.textContent! + 1).toString()
+  }
+
+  resetGame()
 }
 
 function hasThreeChildren(
@@ -87,7 +119,8 @@ function checkWinner(): void {
     const result = hasThreeEquals(box1, box2, box3)
     if (result !== 0) {
       declareWinner(result)
-    }
+      break
+    } else if (player1Turns === lastTurn) declareWinner(0)
   }
 }
 
@@ -95,7 +128,7 @@ boxes.forEach((box) => {
   box.addEventListener('click', function () {
     if (this.childNodes.length === 0) {
       const clone = setPlayerTurn()
-      this.appendChild(clone)
+      if (clone instanceof Node) this.appendChild(clone)
     }
 
     if (player1Turns >= 3) {
@@ -103,3 +136,17 @@ boxes.forEach((box) => {
     }
   })
 })
+
+for (let i = 0; i < buttons.length; i++) {
+  buttons[i].addEventListener('click', function () {
+    secondPlayer = this.getAttribute('id')
+
+    buttons[0].style.display = 'none'
+    buttons[1].style.display = 'none'
+
+    setTimeout(() => {
+      const container = document.querySelector('#container') as HTMLDivElement
+      container.classList.remove('hide')
+    }, 500)
+  })
+}
